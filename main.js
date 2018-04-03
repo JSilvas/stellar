@@ -103,7 +103,7 @@ function spawnBalls() { // Spawn random balls
     random(-7,7), // X axis velocity
     random(-7,7), // Y axis velocity
     'rgb(' + random(0,255) + ',' + random(0,255) + ',' + random(0,255) +')',
-    random(2,50) // Ball size range in px
+    random(5,50) // Ball size range in px
   );
   balls.push(ball);
 }
@@ -126,9 +126,15 @@ function loop() {
   requestAnimationFrame(loop); // loops each new frame
 }
 
+function countOrbs() {
+  console.log('Orbs count:', balls.length);
+}
+
 // #######################
 // Function calls
 // #######################
 
 loop();
+
+setInterval(countOrbs, 2000);
 
