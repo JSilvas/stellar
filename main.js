@@ -9,8 +9,8 @@ var height = canvas.height = window.innerHeight;
 // easy check of viewport resolution
 const view = (width + ' x ' + height);
 
-// 
-var balls = [];
+// All balls forever!
+const balls = [];
 
 // Ball Constructor
 
@@ -22,6 +22,9 @@ function Ball(x, y, velX, velY, color, size) {
   this.color = color;
   this.size = size;
 }
+
+Ball.maxBalls = 100;
+Ball.spawnCount = 0;
 
 // ###########################
 // Functions!!!
@@ -63,16 +66,46 @@ Ball.prototype.update = function() {
 
 Ball.prototype.collisionDetect = function() {
   for (var j = 0; j < balls.length; j++) {
-    if (!(this === balls[j])) {
+    if (!(this === balls[j])) { // sphere collision check
       var dx = this.x - balls[j].x;
       var dy = this.y - balls[j].y;
       var distance = Math.sqrt(dx * dx + dy * dy);
-
+      
       if (distance < this.size + balls[j].size) {
+        
+        if (balls.length < Ball.maxBalls) {
+          while (Ball.spawnCount < 5) {
+            Ball.spawnCount += 1;
+            let ball = new Ball(
+              balls[j].x,
+              balls[j].y,
+              random(-7,7), // X axis velocity
+              random(-7,7), // Y axis velocity
+              'rgb(' + random(0,255) + ',' + random(0,255) + ',' + random(0,255) +')',
+              random(1,30) // Ball size range in px
+            );
+            balls.push(ball);
+          }
+        }
+
         balls[j].color = this.color = 'rgb(' + random(0, 255) + ',' + random(0, 255) + ',' + random(0, 255) +')';
+        balls.splice(j,1);
+        Ball.spawnCount = 0;
       }
     }
   }
+}
+
+function spawnBalls() { // Spawn random balls
+  var ball = new Ball(
+    random(0,width),
+    random(0,height),
+    random(-7,7), // X axis velocity
+    random(-7,7), // Y axis velocity
+    'rgb(' + random(0,255) + ',' + random(0,255) + ',' + random(0,255) +')',
+    random(2,50) // Ball size range in px
+  );
+  balls.push(ball);
 }
 
 // Animation Loop
@@ -80,16 +113,8 @@ function loop() {
   ctx.fillStyle = 'rgba(0, 0, 0, 0.25)';  // draws new window background. Last param adjusts transparency
   ctx.fillRect(0, 0, width, height);
 
-  while (balls.length < 25) { // max number of balls at a time
-    var ball = new Ball(
-      random(0,width),
-      random(0,height),
-      random(-7,7), // X axis velocity
-      random(-7,7), // Y axis velocity
-      'rgb(' + random(0,255) + ',' + random(0,255) + ',' + random(0,255) +')',
-      random(2,20) // Ball size range in px
-    );
-    balls.push(ball);
+  while (balls.length < 10) { // max number of balls at a time
+    spawnBalls();
   }
 
   for (var i = 0; i < balls.length; i++) {  // renders new ball positions
@@ -106,3 +131,4 @@ function loop() {
 // #######################
 
 loop();
+
