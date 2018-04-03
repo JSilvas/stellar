@@ -74,7 +74,7 @@ Ball.prototype.collisionDetect = function() {
       if (distance < this.size + balls[j].size) {
         
         if (balls.length < Ball.maxBalls) {
-          while (Ball.spawnCount < 5) {
+          while (Ball.spawnCount < 4) {
             Ball.spawnCount += 1;
             let ball = new Ball(
               balls[j].x,
@@ -110,7 +110,7 @@ function spawnBalls() { // Spawn random balls
 
 // Animation Loop
 function loop() {
-  ctx.fillStyle = 'rgba(0, 0, 0, 0.25)';  // draws new window background. Last param adjusts transparency
+  ctx.fillStyle = 'rgba(0, 0, 0, 0.15)';  // draws new window background. Last param adjusts transparency
   ctx.fillRect(0, 0, width, height);
 
   while (balls.length < 10) { // max number of balls at a time
