@@ -1,19 +1,21 @@
 // setup canvas
+const canvas = document.querySelector('canvas');
+const ctx = canvas.getContext('2d');
 
-var canvas = document.querySelector('canvas');
-var ctx = canvas.getContext('2d');
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
 
-var width = canvas.width = window.innerWidth;
-var height = canvas.height = window.innerHeight;
-
-// easy check of viewport resolution
-const view = (width + ' x ' + height);
+// Event Listeners
+window.addEventListener("resize", function() {
+  canvas.width = window.innerWidth;	
+  canvas.height = window.innerHeight;
+  loop();
+});
 
 // All balls forever!
 const balls = [];
 
 // Ball Constructor
-
 function Ball(x, y, velX, velY, color, size) {
   this.x = x;
   this.y = y;
@@ -32,7 +34,7 @@ Ball.spawnCount = 0;
 
 // function to generate random number
 function random(min,max) {
-  var num = Math.floor(Math.random()*(max-min)) + min;
+  const num = Math.floor(Math.random()*(max-min)) + min;
   return num;
 }
 Ball.prototype.draw = function() {
@@ -44,7 +46,7 @@ Ball.prototype.draw = function() {
 
 // Calc Window Edge Collision for balls
 Ball.prototype.update = function() {
-  if ((this.x + this.size) >= width) {
+  if ((this.x + this.size) >= canvas.width) {
     this.velX = -(this.velX);
   }
 
@@ -52,7 +54,7 @@ Ball.prototype.update = function() {
     this.velX = -(this.velX);
   }
 
-  if ((this.y + this.size) >= height) {
+  if ((this.y + this.size) >= canvas.height) {
     this.velY = -(this.velY);
   }
 
@@ -65,18 +67,18 @@ Ball.prototype.update = function() {
 }
 
 Ball.prototype.collisionDetect = function() {
-  for (var j = 0; j < balls.length; j++) {
+  for (let j = 0; j < balls.length; j++) {
     if (!(this === balls[j])) { // sphere collision check
-      var dx = this.x - balls[j].x;
-      var dy = this.y - balls[j].y;
-      var distance = Math.sqrt(dx * dx + dy * dy);
+      const dx = this.x - balls[j].x;
+      const dy = this.y - balls[j].y;
+      const distance = Math.sqrt(dx * dx + dy * dy);
       
       if (distance < this.size + balls[j].size) {
         
         if (balls.length < Ball.maxBalls) {
           while (Ball.spawnCount < 5) {
             Ball.spawnCount += 1;
-            let ball = new Ball(
+            const ball = new Ball(
               balls[j].x,
               balls[j].y,
               random(-7,7), // X axis velocity
@@ -97,9 +99,9 @@ Ball.prototype.collisionDetect = function() {
 }
 
 function spawnBalls() { // Spawn random balls
-  var ball = new Ball(
-    random(0,width),
-    random(0,height),
+  const ball = new Ball(
+    random(0,canvas.width),
+    random(0,canvas.height),
     random(-7,7), // X axis velocity
     random(-7,7), // Y axis velocity
     'rgb(' + random(0,255) + ',' + random(0,255) + ',' + random(0,255) +')',
@@ -110,14 +112,14 @@ function spawnBalls() { // Spawn random balls
 
 // Animation Loop
 function loop() {
-  ctx.fillStyle = 'rgba(0, 0, 0, 0.25)';  // draws new window background. Last param adjusts transparency
-  ctx.fillRect(0, 0, width, height);
+  ctx.fillStyle = 'rgba(0, 5, 25, 0.25)';  // draws new window background. Last param adjusts transparency
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
 
   while (balls.length < 10) { // max number of balls at a time
     spawnBalls();
   }
 
-  for (var i = 0; i < balls.length; i++) {  // renders new ball positions
+  for (let i = 0; i < balls.length; i++) {  // renders new ball positions
     balls[i].draw();
     balls[i].update();
     balls[i].collisionDetect();
@@ -137,4 +139,3 @@ function countOrbs() {
 loop();
 
 setInterval(countOrbs, 2000);
-
